@@ -1,0 +1,482 @@
+/* ============================================================
+   Motor de sites-demo de restaurante — estilo base.
+   Mobile-first, sem dependência, sem webfont.
+
+   As cores NÃO ficam aqui. Vêm da marca de cada cliente, via
+   variáveis que o build.mjs injeta num <style> no <head>:
+   --primaria --secundaria --tinta --fundo --fundo-alt etc.
+
+   Regra de uso das cores da marca:
+   - fundo sempre claro, tipografia sempre escura
+   - primária: botões, links, títulos de faixa, barra de destaque
+   - secundária: detalhes pequenos — chips, estrelas, filetes
+   Cor grande e chapada só em faixa curta, nunca em bloco de leitura.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --fonte: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --topo-h: 72px;
+  --raio: 14px;
+  --max: 1140px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--topo-h) + 12px);
+}
+
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--tinta);
+  background: var(--fundo);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--link); }
+
+h1, h2, h3 {
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 .5em;
+}
+h1 { font-size: clamp(2.1rem, 7vw, 3.4rem); }
+h2 { font-size: clamp(1.6rem, 4.2vw, 2.4rem); }
+h3 { font-size: 1.1rem; letter-spacing: -0.01em; }
+
+p { margin: 0 0 1em; }
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+.sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--primaria);
+  outline-offset: 2px;
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: var(--tinta-suave);
+  max-width: 62ch;
+}
+
+.miudo {
+  font-size: .88rem;
+  color: var(--tinta-suave);
+}
+
+.sobretitulo {
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .76rem;
+  font-weight: 700;
+  color: var(--primaria);
+  margin: 0 0 .8em;
+}
+
+/* ---------- botões ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5em;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  white-space: nowrap;
+  transition: background-color .15s, border-color .15s, transform .1s;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primario {
+  background: var(--primaria);
+  color: var(--sobre-primaria);
+}
+.btn-primario:hover { background: var(--primaria-escura); }
+
+.btn-vazado {
+  border-color: var(--borda);
+  color: var(--tinta);
+  background: transparent;
+}
+.btn-vazado:hover { border-color: var(--tinta); }
+
+.btn-menor { padding: 10px 18px; font-size: .94rem; }
+
+/* ---------- topo ---------- */
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--fundo);
+  border-bottom: 1px solid var(--borda);
+}
+.topo-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--topo-h);
+}
+.marca { display: flex; align-items: center; text-decoration: none; }
+.logo {
+  height: 52px;
+  width: auto;
+  border-radius: 8px;
+}
+.logo-texto {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.menu-btn {
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;
+  background: none;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.hamburguer, .hamburguer::before, .hamburguer::after {
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--tinta);
+  border-radius: 2px;
+}
+.hamburguer { position: relative; }
+.hamburguer::before, .hamburguer::after { content: ""; position: absolute; left: 0; }
+.hamburguer::before { top: -6px; }
+.hamburguer::after { top: 6px; }
+
+.menu {
+  display: none;
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  background: var(--fundo);
+  border-bottom: 1px solid var(--borda);
+  padding: 8px 20px 20px;
+  flex-direction: column;
+  gap: 4px;
+}
+.menu.aberto { display: flex; }
+.menu a {
+  color: var(--tinta);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--borda);
+}
+.menu a:hover { color: var(--primaria); }
+/* padding explícito: .menu a venceria o do .btn por especificidade */
+.menu .btn {
+  border-bottom: 0;
+  margin-top: 12px;
+  padding: 13px 22px;
+  color: var(--sobre-primaria);
+  justify-content: center;
+}
+
+/* ---------- hero ---------- */
+
+.hero { padding: 44px 0 8px; }
+.hero-grid { display: grid; gap: 30px; }
+.hero h1 { margin-bottom: .35em; }
+
+.nota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .45em;
+  font-size: 1rem;
+  margin: 0 0 1.4em;
+}
+.estrelas {
+  color: var(--realce);
+  letter-spacing: .06em;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 1em;
+}
+
+.hero-midia {
+  position: relative;
+  overflow: hidden;             /* recorta o zoom do hero */
+  border-radius: var(--raio);
+}
+/* Tinta da marca sobre a foto de topo. Heros genéricos podem se repetir
+   entre restaurantes — esta camada faz a mesma imagem ler diferente em
+   cada casa, porque a cor vem da marca. */
+.hero-midia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--raio);
+  pointer-events: none;
+  background: linear-gradient(205deg, transparent 35%, var(--primaria) 135%);
+  opacity: .42;
+  mix-blend-mode: multiply;
+}
+/* no placeholder a cor já é da marca; tinta em cima só suja */
+.hero-midia:has(.hero-placeholder)::after { display: none; }
+
+.hero-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--raio);
+  transform: scale(var(--hero-zoom, 1)) scaleX(var(--hero-espelho, 1));
+}
+.hero-placeholder {
+  background:
+    radial-gradient(120% 90% at 15% 10%, var(--secundaria) 0%, transparent 55%),
+    linear-gradient(150deg, var(--primaria) 0%, var(--primaria-escura) 100%);
+}
+
+/* ---------- faixa de destaques ---------- */
+
+.faixa {
+  background: var(--primaria);
+  color: var(--sobre-primaria);
+  margin-top: 34px;
+  padding: 34px 0;
+}
+.tira { display: grid; gap: 24px; }
+.tira-titulo {
+  font-size: 1.05rem;
+  margin: 0 0 .3em;
+  color: inherit;
+}
+.tira-item p { margin: 0; opacity: .88; font-size: .98rem; }
+
+/* ---------- seções ---------- */
+
+.secao { padding: 56px 0; }
+.secao-alt { background: var(--fundo-alt); }
+
+/* ---------- cartões (o que servimos) ---------- */
+
+.cartoes {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0 0;
+  display: grid;
+  gap: 16px;
+}
+.cartao {
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 22px;
+  border-top: 4px solid var(--primaria);
+}
+.cartao h3 { margin-bottom: .3em; }
+.cartao p { margin: 0; color: var(--tinta-suave); font-size: .96rem; }
+
+/* ---------- chips de estrutura ---------- */
+
+.marcadores {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.marcadores li {
+  background: var(--realce-claro);
+  color: var(--tinta);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: .92rem;
+  font-weight: 600;
+}
+
+/* ---------- galeria ---------- */
+
+.galeria { position: relative; margin-top: 8px; }
+.galeria-trilha {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.galeria-trilha::-webkit-scrollbar { display: none; }
+.galeria-trilha li {
+  flex: 0 0 82%;
+  scroll-snap-align: center;
+}
+.galeria-trilha img {
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* lote misto: quadrado é o corte que perde menos */
+  object-fit: cover;
+  border-radius: var(--raio);
+}
+.galeria-nav {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--borda);
+  background: var(--fundo);
+  color: var(--tinta);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.galeria-nav.prev { left: -10px; }
+.galeria-nav.next { right: -10px; }
+
+/* ---------- depoimentos ---------- */
+
+.depoimentos {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+.depoimento {
+  margin: 0;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 24px;
+}
+.secao:not(.secao-alt) .depoimento { background: var(--fundo-alt); border-color: transparent; }
+.depoimento blockquote {
+  margin: .6em 0 1em;
+  font-size: 1.02rem;
+}
+.depoimento blockquote::before { content: "\201C"; }
+.depoimento blockquote::after { content: "\201D"; }
+.depoimento figcaption { font-weight: 700; font-size: .94rem; }
+.depoimento figcaption .miudo { font-weight: 400; }
+
+/* ---------- onde estamos ---------- */
+
+.onde-grid { display: grid; gap: 28px; }
+address { font-style: normal; margin-bottom: 1.6em; }
+.onde-grid h3 { margin-top: 1.4em; }
+
+.horarios { list-style: none; padding: 0; margin: 0 0 1em; }
+.horarios li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--borda);
+}
+.horarios li span:last-child { font-weight: 600; white-space: nowrap; }
+
+.contato { display: flex; flex-wrap: wrap; gap: 8px 20px; font-weight: 600; }
+
+.mapa {
+  display: grid;            /* faz o iframe esticar até o fim da caixa */
+  border-radius: var(--raio);
+  overflow: hidden;
+  border: 1px solid var(--borda);
+  min-height: 320px;
+}
+.mapa iframe { width: 100%; height: 100%; min-height: 320px; border: 0; display: block; }
+
+/* ---------- rodapé ---------- */
+
+.rodape {
+  background: var(--fundo);
+  border-top: 1px solid var(--borda);
+  padding: 40px 0 28px;
+}
+.rodape-cols {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.rodape-cols strong { display: block; margin-bottom: .3em; }
+.rodape p { margin: 0; }
+
+.demo-aviso {
+  background: var(--realce-claro);
+  border-radius: var(--raio);
+  padding: 16px 20px;
+  font-size: .88rem;
+  color: var(--tinta);
+  margin: 0 0 20px;
+}
+
+.creditos { text-align: center; margin: 0; }
+
+/* ---------- telas maiores ---------- */
+
+@media (min-width: 760px) {
+  .cartoes { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .depoimentos { grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); }
+  .tira { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .rodape-cols { grid-template-columns: repeat(2, 1fr); }
+  .galeria-trilha li { flex-basis: 46%; }
+}
+
+@media (min-width: 980px) {
+  body { font-size: 18px; }
+  .menu-btn { display: none; }
+  .menu {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 26px;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .menu a { padding: 0; border: 0; font-size: .96rem; }
+  .menu .btn { flex: 0 0 auto; margin-top: 0; padding: 11px 20px; }
+  .hero { padding: 64px 0 8px; }
+  .hero-grid { grid-template-columns: 1.05fr 1fr; align-items: center; gap: 48px; }
+  .hero-foto { aspect-ratio: 5 / 4; }
+  .secao { padding: 76px 0; }
+  .onde-grid { grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: stretch; }
+  .mapa { min-height: 420px; }
+  .galeria-trilha li { flex-basis: 31.5%; }
+  .galeria-nav { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .galeria-trilha { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
