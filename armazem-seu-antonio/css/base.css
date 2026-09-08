@@ -192,7 +192,7 @@ p { margin: 0 0 1em; }
   padding: 12px 0;
   border-bottom: 1px solid var(--borda);
 }
-.menu a:hover { color: var(--primaria); }
+.menu a:not(.btn):hover { color: var(--primaria); }
 /* padding explícito: .menu a venceria o do .btn por especificidade */
 .menu .btn {
   border-bottom: 0;
